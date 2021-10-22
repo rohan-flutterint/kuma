@@ -43,17 +43,17 @@ var _ = Describe("Builtin CA Manager", func() {
 		core.Now = time.Now
 	})
 
-	Context("EnsureBackends", func() {
+	Context("Ensure", func() {
 		It("should create a CA", func() {
 			// given
 			mesh := "default"
-			backends := []*mesh_proto.CertificateAuthorityBackend{{
+			backend := &mesh_proto.CertificateAuthorityBackend{
 				Name: "builtin-1",
 				Type: "builtin",
-			}}
+			}
 
 			// when
-			err := caManager.EnsureBackends(context.Background(), mesh, backends)
+			err := caManager.Ensure(context.Background(), mesh, backend)
 
 			// then
 			Expect(err).ToNot(HaveOccurred())
@@ -70,7 +70,7 @@ var _ = Describe("Builtin CA Manager", func() {
 			Expect(keyRes.Spec.GetData().GetValue()).ToNot(BeEmpty())
 
 			// when called Ensured after CA is already created
-			err = caManager.EnsureBackends(context.Background(), mesh, backends)
+			err = caManager.Ensure(context.Background(), mesh, backend)
 
 			// then no error happens
 			Expect(err).ToNot(HaveOccurred())
@@ -85,7 +85,7 @@ var _ = Describe("Builtin CA Manager", func() {
 		It("should create a configured CA", func() {
 			// given
 			mesh := "default"
-			backends := []*mesh_proto.CertificateAuthorityBackend{{
+			backend := &mesh_proto.CertificateAuthorityBackend{
 				Name: "builtin-1",
 				Type: "builtin",
 				Conf: util_proto.MustToStruct(&config.BuiltinCertificateAuthorityConfig{
@@ -94,10 +94,10 @@ var _ = Describe("Builtin CA Manager", func() {
 						Expiration: "1m",
 					},
 				}),
-			}}
+			}
 
 			// when
-			err := caManager.EnsureBackends(context.Background(), mesh, backends)
+			err := caManager.Ensure(context.Background(), mesh, backend)
 
 			// then
 			Expect(err).ToNot(HaveOccurred())
@@ -121,7 +121,7 @@ var _ = Describe("Builtin CA Manager", func() {
 				Name: "builtin-1",
 				Type: "builtin",
 			}
-			err := caManager.EnsureBackends(context.Background(), mesh, []*mesh_proto.CertificateAuthorityBackend{backend})
+			err := caManager.Ensure(context.Background(), mesh, backend)
 			Expect(err).ToNot(HaveOccurred())
 
 			// when
@@ -162,7 +162,7 @@ var _ = Describe("Builtin CA Manager", func() {
 					},
 				},
 			}
-			err := caManager.EnsureBackends(context.Background(), mesh, []*mesh_proto.CertificateAuthorityBackend{backend})
+			err := caManager.Ensure(context.Background(), mesh, backend)
 			Expect(err).ToNot(HaveOccurred())
 
 			// when
