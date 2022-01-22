@@ -94,7 +94,7 @@ func buildRuntime(appCtx context.Context, cfg kuma_cp.Config) (core_runtime.Runt
 		return nil, err
 	}
 
-	builder.WithDataSourceLoader(datasource.NewDataSourceLoader(builder.ReadOnlyResourceManager()))
+	builder.WithDataSourceLoader(datasource.NewDataSourceLoader(datasource.NewStoreSecretLoader(builder.ReadOnlyResourceManager())))
 
 	if err := initializeCaManagers(builder); err != nil {
 		return nil, err

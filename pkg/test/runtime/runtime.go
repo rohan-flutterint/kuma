@@ -76,7 +76,7 @@ func BuilderFor(appCtx context.Context, cfg kuma_cp.Config) (*core_runtime.Build
 	metrics, _ := metrics.NewMetrics("Standalone")
 	builder.WithMetrics(metrics)
 
-	builder.WithDataSourceLoader(datasource.NewDataSourceLoader(builder.ResourceManager()))
+	builder.WithDataSourceLoader(datasource.NewDataSourceLoader(datasource.NewStoreSecretLoader(builder.ResourceManager())))
 	builder.WithCaManager("builtin", builtin.NewBuiltinCaManager(builder.ResourceManager()))
 	builder.WithLeaderInfo(&component.LeaderInfoComponent{})
 	builder.WithLookupIP(net.LookupIP)

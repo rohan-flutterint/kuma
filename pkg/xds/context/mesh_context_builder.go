@@ -94,6 +94,11 @@ func (m *meshContextBuilder) BuildIfChanged(ctx context.Context, meshName string
 	// resolve all the domains
 	domains, outbounds := xds_topology.VIPOutbounds(virtualOutboundView, m.topLevelDomain)
 
+	secretsByName := map[string][]byte{}
+	for _, secret := range resources.Secrets().Items {
+		secretsByName[secret.Meta.GetName()] = secret.Spec.GetData().GetValue()
+	}
+
 	return &MeshContext{
 		Hash:                newHash,
 		Resource:            mesh,
@@ -103,6 +108,7 @@ func (m *meshContextBuilder) BuildIfChanged(ctx context.Context, meshName string
 		VIPDomains:          domains,
 		VIPOutbounds:        outbounds,
 		ServiceTLSReadiness: resolveTLSReadiness(mesh, resources.ServiceInsights()),
+		SecretsByName:       secretsByName,
 	}, nil
 }
 

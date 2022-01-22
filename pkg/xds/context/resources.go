@@ -2,6 +2,7 @@ package context
 
 import (
 	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	"github.com/kumahq/kuma/pkg/core/resources/apis/system"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	"github.com/kumahq/kuma/pkg/core/resources/registry"
 )
@@ -82,4 +83,8 @@ func (r Resources) Gateways() *core_mesh.GatewayResourceList {
 
 func (r Resources) GatewayRoutes() *core_mesh.GatewayRouteResourceList {
 	return r.ListOrEmpty(core_mesh.GatewayRouteType).(*core_mesh.GatewayRouteResourceList)
+}
+
+func (r Resources) Secrets() *system.SecretResourceList {
+	return r.ListOrEmpty(system.SecretType).(*system.SecretResourceList)
 }

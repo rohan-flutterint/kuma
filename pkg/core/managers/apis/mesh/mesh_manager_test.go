@@ -40,7 +40,7 @@ var _ = Describe("Mesh Manager", func() {
 		resStore = memory.NewStore()
 		secretManager = secrets_manager.NewSecretManager(secrets_store.NewSecretStore(resStore), cipher.None(), nil)
 		builtinCaManager = ca_builtin.NewBuiltinCaManager(secretManager)
-		providedCaManager := provided.NewProvidedCaManager(datasource.NewDataSourceLoader(secretManager))
+		providedCaManager := provided.NewProvidedCaManager(datasource.NewDataSourceLoader(datasource.NewStoreSecretLoader(secretManager)))
 		caManagers := core_ca.Managers{
 			"builtin":  builtinCaManager,
 			"provided": providedCaManager,

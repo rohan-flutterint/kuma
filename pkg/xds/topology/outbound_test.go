@@ -54,8 +54,8 @@ var _ = Describe("TrafficRoute", func() {
 	var dataSourceLoader datasource.Loader
 
 	BeforeEach(func() {
-		secretManager := secret_manager.NewSecretManager(secret_store.NewSecretStore(memory.NewStore()), cipher.None(), nil)
-		dataSourceLoader = datasource.NewDataSourceLoader(secretManager)
+		secretLoader := datasource.NewStoreSecretLoader(secret_manager.NewSecretManager(secret_store.NewSecretStore(memory.NewStore()), cipher.None(), nil))
+		dataSourceLoader = datasource.NewDataSourceLoader(secretLoader)
 	})
 	Describe("GetOutboundTargets()", func() {
 		It("should pick proper dataplanes for each outbound destination", func() {

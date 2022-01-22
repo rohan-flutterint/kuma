@@ -23,13 +23,47 @@ var _ = Describe("DataSource Loader", func() {
 
 	var secretManager manager.ResourceManager
 	var dataSourceLoader datasource.Loader
+	var meshDataSourceLoader datasource.Loader
 
 	BeforeEach(func() {
 		secretManager = secret_manager.NewSecretManager(secret_store.NewSecretStore(memory.NewStore()), cipher.None(), nil)
-		dataSourceLoader = datasource.NewDataSourceLoader(secretManager)
+		dataSourceLoader = datasource.NewDataSourceLoader(datasource.NewStoreSecretLoader(secretManager))
+
+		meshSecretLoader := datasource.NewMeshSecretLoader(map[string][]byte{
+			"test-secret": []byte("abc"),
+		})
+		meshDataSourceLoader = datasource.NewDataSourceLoader(meshSecretLoader)
 	})
 
-	Context("Secret", func() {
+	Context("Mesh Context Secret", func() {
+		It("should load secret", func() {
+			// when
+			data, err := meshDataSourceLoader.Load(context.Background(), "default", &system_proto.DataSource{
+				Type: &system_proto.DataSource_Secret{
+					Secret: "test-secret",
+				},
+			})
+
+			// then
+			Expect(err).ToNot(HaveOccurred())
+			Expect(data).To(Equal([]byte("abc")))
+
+		})
+
+		It("should throw an error when secret is not found", func() {
+			// when
+			_, err := meshDataSourceLoader.Load(context.Background(), "default", &system_proto.DataSource{
+				Type: &system_proto.DataSource_Secret{
+					Secret: "noexist-secret",
+				},
+			})
+
+			// then
+			Expect(err).To(MatchError(`could not load data: secret not found: name="noexist-secret" mesh="default"`))
+		})
+	})
+
+	Context("Resource Manager Secret", func() {
 		It("should load secret", func() {
 			// given
 			secretResource := system.SecretResource{

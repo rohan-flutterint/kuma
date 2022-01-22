@@ -40,6 +40,7 @@ type MeshContext struct {
 	VIPDomains          []xds.VIPDomains
 	VIPOutbounds        []*mesh_proto.Dataplane_Networking_Outbound
 	ServiceTLSReadiness map[string]bool
+	SecretsByName       map[string][]byte
 }
 
 func (mc *MeshContext) GetTracingBackend(tt *core_mesh.TrafficTraceResource) *mesh_proto.TracingBackend {

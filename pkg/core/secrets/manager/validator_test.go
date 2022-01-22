@@ -42,7 +42,7 @@ var _ = Describe("Secret Validator", func() {
 		secManager := secrets_manager.NewSecretManager(secrets_store.NewSecretStore(memoryStore), cipher.None(), validator)
 
 		caManagers["builtin"] = ca_builtin.NewBuiltinCaManager(secManager)
-		caManagers["provided"] = ca_provided.NewProvidedCaManager(core_datasource.NewDataSourceLoader(secManager))
+		caManagers["provided"] = ca_provided.NewProvidedCaManager(core_datasource.NewDataSourceLoader(core_datasource.NewStoreSecretLoader(secManager)))
 	})
 
 	type testCase struct {
